@@ -57,6 +57,8 @@ let comparison = 0;
 return comparison;
 }
 
+
+
 const validator=(ev)=> // used for validating name field 
 {
 let data =ev.target.value;
@@ -86,12 +88,18 @@ let splChars = "!*|,\":<>[]{}`/';()@&$#%+-_^~?.=";
     }
 }
 
+
+
+
 const onChangeValue=(event) => {
     setValue(event.target.value);
       
       }
     
      
+
+
+      
       const  StudentData = e =>
       {
         e.preventDefault();
