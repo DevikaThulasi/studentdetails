@@ -1,0 +1,15 @@
+.mcontainer
+{
+  padding: 30px;
+  background-color: cadetblue;
+  height: 100%;
+
+}
+.addbox
+{
+  padding: 30px;
+  padding-top: 15px;
+  background-color: white;
+  height: 100%;
+  
+}
