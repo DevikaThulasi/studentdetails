@@ -7,7 +7,12 @@ getAll()
    
 }
 create(data) {
+  alert("message")
     return http.post("/students", data);
+  }
+
+  update(id, data) {
+    return http.put(`/students/${id}`, data);
   }
 
 }
