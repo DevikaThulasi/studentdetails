@@ -11,17 +11,19 @@ import { IconButton } from '@material-ui/core';
 
 import EditIcon from '@material-ui/icons/Edit';
 import Edit from '@material-ui/icons/Edit';
+import { withRouter } from 'react-router';
 
 
 const TableComponent = (props) => {
-    const {editdet}=props
+    const { editdet } = props
 
     const [Stud_List, setStud_List] = useState([])
+    
 
     useEffect(() => {
         getStudentlist()
 
-    })
+    },)
 
 
     const getStudentlist = () => {
@@ -29,14 +31,18 @@ const TableComponent = (props) => {
             .then(response => {
 
                 if (response.data.length > 0) {
-
+               
                     setStud_List(response.data.sort(compare))
                 }
             }).catch(e => { console.log(e); })
 
     }
 
-
+const redirectto=(stud)=>
+{
+    editdet(stud)
+    props.history.push(`/edit/${stud.id}`)
+}
 
     const compare = (a, b) => {
         //  Used for converting array in ascending order
@@ -79,7 +85,7 @@ const TableComponent = (props) => {
                                 <TableCell align="center">{stud.gender}</TableCell>
                                 <TableCell align="center">{stud.stud_class}</TableCell>
                                 <TableCell align="center">{stud.division}</TableCell>
-                                <TableCell><IconButton> <EditIcon onClick={() => editdet(stud)} /></IconButton></TableCell>
+                                <TableCell><IconButton> <EditIcon onClick={() => redirectto(stud)} /></IconButton></TableCell>
                             </TableRow>
                         ))
                     }
@@ -93,4 +99,4 @@ const TableComponent = (props) => {
 
 
 
-export default TableComponent;
+export default withRouter(TableComponent);

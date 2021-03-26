@@ -20,8 +20,8 @@ import StudentService from '../../services/services'
 const FormComponent = (props) => {
 
 
-  const { name, setName, dob, setDob, gender, setGender, stud_class, setStud_Class, division, setDivision,
-    isEdit, setEdit,id } = props
+  const { rollno, setrollNo, name, setName, dob, setDob, gender, setGender, stud_class, setStud_Class, division, setDivision,
+    isEdit, setEdit, id } = props
   const [Stud_List, setStud_List] = useState([]);
 
   const [btn_State, SetBtn_State] = useState(true);
@@ -36,6 +36,7 @@ const FormComponent = (props) => {
 
   const StudentData = (e) => {
     e.preventDefault()
+
     if (!isEdit) {
       let rollno;
       let temp = Stud_List.sort(unique);
@@ -52,13 +53,15 @@ const FormComponent = (props) => {
       StudentService.create(data)
 
     } else {
-      const data = { rollno:10, name, division, stud_class, dob, gender }
-      console.log(name,"edited")
+      const data = { rollno, name, division, stud_class, dob, gender }
+      console.log(name, "edited")
       console.log(id)
-      StudentService.update(id,data)
+      StudentService.update(id, data).then(response => {
+        console.log(response.data)
+      })
 
     }
-    clear()
+    
   }
 
   const getStudentdetails = () => {
@@ -70,6 +73,7 @@ const FormComponent = (props) => {
           setStud_List(response.data.sort(compare))
         }
       }).catch(e => { console.log(e); })
+      //clear()
   }
 
   const compare = (a, b) => {
@@ -138,15 +142,15 @@ const FormComponent = (props) => {
 
   }
 
-  const clear = () => {
-    setName("")
-    setDob("")
-    setGender(null)
-    setStud_Class("")
-    setDivision("")
-    SetBtn_State(true)
-    setEdit(false);
-  }
+  // const clear = () => {
+  //   setName("")
+  //   setDob("")
+  //   setGender(null)
+  //   setStud_Class("")
+  //   setDivision("")
+  //   SetBtn_State(true)
+  //   setEdit(false);
+  // }
 
   return (
 
@@ -162,6 +166,7 @@ const FormComponent = (props) => {
           <GridItem xs={12} sm={12} md={11}>
             <TextField
               label="Name"
+              
               id="name"
               required
               type="text"
