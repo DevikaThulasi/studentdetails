@@ -7,57 +7,95 @@ import GridContainer from './components/UiComponents/Grid/GridContainer';
 
 import GridItem from './components/UiComponents/Grid/GridItem';
 import TableComponent from './components/TableComponent/TableComponent';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import Edit from "./components/Edit"
+import { Route, Switch, withRouter } from 'react-router';
 
-const App=()=> {
+const App = () => {
 
-  const[name,setName]=useState(null);
-  const[dob,setDob]=useState(null);
-  const[gender,setGender]=useState(null);
-  const [stud_class,setStud_Class]=useState(null);
-  const [division,setDivision]=useState(null);
-  const[id,setId]=useState(null)
+  const [name, setName] = useState(null);
+  const [dob, setDob] = useState(null);
+  const [gender, setGender] = useState(null);
+  const [stud_class, setStud_Class] = useState(null);
+  const [division, setDivision] = useState(null);
+  const [id, setId] = useState(null)
+  const [rollno,setrollNo]=useState(null)
 
-  const[isEdit,setEdit]=useState(false);
-    const editdet = (studentdet) => {
-      console.log(studentdet);
-      if(studentdet){
-        setName(studentdet.name)
-        setDob(studentdet.dob)
-        setGender(studentdet.gender)
-        setStud_Class(studentdet.stud_class)
-        setDivision(studentdet.division)
-        setEdit(true)
-        setId(studentdet.id)
+  const [isEdit, setEdit] = useState(false);
 
-      }
+
+  const editdet = (studentdet,props) => {
+    console.log(studentdet);
+    if (studentdet) {
+      setName(studentdet.name)
+      setDob(studentdet.dob)
+      setGender(studentdet.gender)
+      setStud_Class(studentdet.stud_class)
+      setDivision(studentdet.division)
+      setEdit(true)
+      setId(studentdet.id)
+      setrollNo(studentdet.rollno)
+      
     }
-    return (
-      <div className="mcontainer">
+  }
+  return (
+    <div >
+      <Header />
 
-        <GridContainer lg={12}>
+      <Switch>
+        <div className="mainContainer">
+          <Route exact path="/">
+            <FormComponent
+            name={name}
+            setName={setName}
+            dob={dob}
+            setDob={setDob}
+            gender={gender}
+            setGender={setGender}
+            stud_class={stud_class}
+            setStud_Class={setStud_Class}
+            division={division}
+            setDivision={setDivision}
+            isEdit={isEdit}
+            setEdit={setEdit}
+            id={id}
+            rollno={rollno}
+            setrollNo={setrollNo}
+              
+            />
+          </Route>
+          <Route path="/tablecomponent">
+            <TableComponent editdet={editdet} />
+          </Route>
 
-          <GridItem lg={5}><FormComponent 
-          name={name}
-          setName={setName}
-          dob={dob}
-          setDob={setDob}
-          gender={gender}
-          setGender={setGender}
-          stud_class={stud_class}
-          setStud_Class={setStud_Class}
-          division={division}
-          setDivision={setDivision}
-          isEdit={isEdit}
-          setEdit={setEdit}
-          id={id} 
+          <Route path="/edit/:id"><Edit
+          
+              name={name}
+              setName={setName}
+              dob={dob}
+              setDob={setDob}
+              gender={gender}
+              setGender={setGender}
+              stud_class={stud_class}
+              setStud_Class={setStud_Class}
+              division={division}
+              setDivision={setDivision}
+              isEdit={isEdit}
+              setEdit={setEdit}
+              id={id}
+              rollno={rollno}
+              setrollNo={setrollNo}/></Route>
+          
+        </div>
+      </Switch>
 
-          /></GridItem>
-          <GridItem lg={6}><TableComponent editdet={editdet} /></GridItem>
-        </GridContainer>
 
-      </div>
-    );
-  
+
+      <Footer />
+    </div>
+  );
+
 }
 
-export default App;
+export default withRouter(App);
