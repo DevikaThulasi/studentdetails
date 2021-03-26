@@ -14,7 +14,7 @@ public class Student {
   private String stud_class;
   private String division;
   private String gender;
-  
+
   public Student() {
 
 }
@@ -30,6 +30,10 @@ public Student( String rollno,String name,  String dob,String stud_class,String 
 
 public String getId() {
   return id;
+}
+
+public void setId(String id) {
+  this.id=id;
 }
 
 public String getRollno() {
@@ -84,5 +88,3 @@ public String toString() {
   return "Student [id=" + id + ",rollno="+ rollno +" name=" + name + ", dob=" + dob + ", stud_class=" + stud_class + ", division=" + division + ",gender="+ gender +"]";
 } 
 }
-
-
