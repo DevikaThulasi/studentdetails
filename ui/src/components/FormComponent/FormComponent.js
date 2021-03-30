@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 
 //matrial ui 
 import TextField from '@material-ui/core/TextField';
@@ -12,101 +12,32 @@ import Select from '@material-ui/core/Select';
 import Button from "@material-ui/core/Button";
 import GridContainer from "../UiComponents/Grid/GridContainer"
 import GridItem from "../UiComponents/Grid/GridItem"
-import TableComponent from "../TableComponent/TableComponent";
 import StudentService from '../../services/services'
-
+import { withRouter } from "react-router";
 
 
 const FormComponent = (props) => {
+  const [name, setName] = useState(null);
+  const [dob, setDob] = useState(null);
+  const [gender, setGender] = useState(null);
+  const [stud_class, setStud_Class] = useState(null);
+  const [division, setDivision] = useState(null);
 
 
-  const { rollno, setrollNo, name, setName, dob, setDob, gender, setGender, stud_class, setStud_Class, division, setDivision,
-    isEdit, setEdit, id } = props
-  const [Stud_List, setStud_List] = useState([]);
 
   const [btn_State, SetBtn_State] = useState(true);
 
-
-  useEffect(() => {
-
-    getStudentdetails()
-
-  })
-
-
   const StudentData = (e) => {
     e.preventDefault()
+    const data = { name, division, stud_class, dob, gender }
+    console.log(name, "edited")
+    StudentService.create(data).then(response => {
+      console.log(response.data)
 
-    if (!isEdit) {
-      let rollno;
-      let temp = Stud_List.sort(unique);
-
-      if (Stud_List.length > 0) {
-        rollno = temp[Stud_List.length - 1].rollno;
-
-        rollno = parseInt(rollno) + 1
-      }
-      else
-        rollno = 100;
-
-      const data = { rollno, name, division, stud_class, dob, gender }
-      StudentService.create(data)
-
-    } else {
-      const data = { rollno, name, division, stud_class, dob, gender }
-      console.log(name, "edited")
-      console.log(id)
-      StudentService.update(id, data).then(response => {
-        console.log(response.data)
-      })
-
-    }
-    
+    });
+    props.history.push("/tablecomponent")
   }
 
-  const getStudentdetails = () => {
-    StudentService.getAll()
-      .then(response => {
-
-        if (response.data.length > 0) {
-
-          setStud_List(response.data.sort(compare))
-        }
-      }).catch(e => { console.log(e); })
-      //clear()
-  }
-
-  const compare = (a, b) => {
-    //  Used for converting array in ascending order
-    // Use toUpperCase() to ignore character casing
-    const nameA = a.name.toUpperCase();
-    const nameB = b.name.toUpperCase();
-
-    let comparison = 0;
-    if (nameA > nameB) {
-      comparison = 1;
-    }
-    else if (nameA < nameB) {
-      comparison = -1;
-    }
-    return comparison;
-  }
-
-
-
-  const unique = (a, b) => {
-    // Use toUpperCase() to ignore character casing
-    const rollnoA = a.rollno
-    const rollnoB = b.rollno
-    let comparison = 0;
-    if (rollnoA > rollnoB) {
-      comparison = 1;
-    }
-    else if (rollnoA < rollnoB) {
-      comparison = -1;
-    }
-    return comparison;
-  }
 
   const getValue = (e) => {
     setGender(e.target.value);
@@ -142,16 +73,6 @@ const FormComponent = (props) => {
 
   }
 
-  // const clear = () => {
-  //   setName("")
-  //   setDob("")
-  //   setGender(null)
-  //   setStud_Class("")
-  //   setDivision("")
-  //   SetBtn_State(true)
-  //   setEdit(false);
-  // }
-
   return (
 
     <div className="addbox">
@@ -166,7 +87,7 @@ const FormComponent = (props) => {
           <GridItem xs={12} sm={12} md={11}>
             <TextField
               label="Name"
-              
+
               id="name"
               required
               type="text"
@@ -261,7 +182,5 @@ const FormComponent = (props) => {
 
 
 
-//========================return / render =======================================================
 
-
-export default FormComponent;
+export default withRouter(FormComponent);

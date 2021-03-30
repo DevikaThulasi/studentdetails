@@ -15,34 +15,32 @@ import { withRouter } from 'react-router';
 
 
 const TableComponent = (props) => {
-    const { editdet } = props
 
     const [Stud_List, setStud_List] = useState([])
-    
+
 
     useEffect(() => {
         getStudentlist()
 
-    },)
+    },[])
 
 
     const getStudentlist = () => {
         StudentService.getAll()
             .then(response => {
-
+                console.log(response);
                 if (response.data.length > 0) {
-               
+
                     setStud_List(response.data.sort(compare))
+
                 }
             }).catch(e => { console.log(e); })
 
     }
 
-const redirectto=(stud)=>
-{
-    editdet(stud)
-    props.history.push(`/edit/${stud.id}`)
-}
+    const redirectto = (stud) => {
+        props.history.push(`/edit/${stud.id}`)
+    }
 
     const compare = (a, b) => {
         //  Used for converting array in ascending order

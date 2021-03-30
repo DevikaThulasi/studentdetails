@@ -10,7 +10,7 @@ public interface StudentServices {
 
     List<Student> findAll();
 
-    String create(Student student);
+    Student create(Student student);
 
     String update(String id, Student student);
 
