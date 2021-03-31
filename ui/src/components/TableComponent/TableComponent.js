@@ -8,9 +8,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { IconButton } from '@material-ui/core';
-
 import EditIcon from '@material-ui/icons/Edit';
-import Edit from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete'
 import { withRouter } from 'react-router';
 
 
@@ -22,13 +21,14 @@ const TableComponent = (props) => {
     useEffect(() => {
         getStudentlist()
 
-    },[])
+    })
 
 
     const getStudentlist = () => {
         StudentService.getAll()
             .then(response => {
-                console.log(response);
+
+
                 if (response.data.length > 0) {
 
                     setStud_List(response.data.sort(compare))
@@ -36,6 +36,13 @@ const TableComponent = (props) => {
                 }
             }).catch(e => { console.log(e); })
 
+    }
+
+
+    const deleteStudent = (id) => {
+
+        StudentService.delete(id);
+        getStudentlist();
     }
 
     const redirectto = (stud) => {
@@ -84,6 +91,7 @@ const TableComponent = (props) => {
                                 <TableCell align="center">{stud.stud_class}</TableCell>
                                 <TableCell align="center">{stud.division}</TableCell>
                                 <TableCell><IconButton> <EditIcon onClick={() => redirectto(stud)} /></IconButton></TableCell>
+                                <TableCell><IconButton><DeleteIcon onClick={() => { deleteStudent(stud.id) }} /></IconButton></TableCell>
                             </TableRow>
                         ))
                     }

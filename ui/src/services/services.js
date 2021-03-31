@@ -6,7 +6,7 @@ class StudentService {
 
   }
   create(data) {
-    alert("called..")
+
 
     return http.post("/students", data);
   }
@@ -18,6 +18,13 @@ class StudentService {
   get(id) {
     return http.get(`/students/${id}`);
   }
+
+  delete(id) {
+
+    return http.delete(`students/${id}`);
+  }
+
+
 
 }
 export default new StudentService();

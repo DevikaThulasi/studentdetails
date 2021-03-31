@@ -1,6 +1,4 @@
-import React, { useState } from "react"
-
-//matrial ui 
+import React, { useEffect, useState } from "react";
 import TextField from '@material-ui/core/TextField';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -22,17 +20,29 @@ const FormComponent = (props) => {
   const [gender, setGender] = useState(null);
   const [stud_class, setStud_Class] = useState(null);
   const [division, setDivision] = useState(null);
-
+  const [dateAlert, setDateAlert] = useState("");
 
 
   const [btn_State, SetBtn_State] = useState(true);
+  useEffect(() => {
+
+
+    if (stud_class != null && division != null && gender != null && dateAlert === " ") {
+      SetBtn_State(false)
+
+    } else SetBtn_State(true)
+
+
+  }, [stud_class, division, gender, dateAlert])
 
   const StudentData = (e) => {
     e.preventDefault()
     const data = { name, division, stud_class, dob, gender }
     console.log(name, "edited")
     StudentService.create(data).then(response => {
-      console.log(response.data)
+      if (response.data) {
+        alert("Successfully Registered")
+      }
 
     });
     props.history.push("/tablecomponent")
@@ -41,7 +51,27 @@ const FormComponent = (props) => {
 
   const getValue = (e) => {
     setGender(e.target.value);
-    SetBtn_State(false);
+
+  }
+
+
+  const dateValidator = (a) => {
+    let todaysDate = new Date();
+    let year = todaysDate.getFullYear();
+
+    let month = ("0" + (todaysDate.getMonth() + 1)).slice(-2);
+
+    let day = ("0" + todaysDate.getDate()).slice(-2);
+    let minDate = (year + "-" + month + "-" + day); // Results in "YYYY-MM-DD" for today's date 
+    let d1 = Date.parse(minDate);
+    let d2 = Date.parse(a.target.value);
+
+    if (d1 < d2) {
+      setDateAlert("Enter a valid date")
+
+    } else
+      setDateAlert(" ");
+    setDob(a.target.value);
   }
 
   const validator = (ev) => {
@@ -100,13 +130,14 @@ const FormComponent = (props) => {
           </GridItem>
 
           <GridItem xs={12} sm={12} md={5}>
-            <FormLabel style={{ marginTop: 50 }} component="legend">Date Of Birth</FormLabel>
+            <h6 style={{ marginTop: 40, color: "red" }}>{dateAlert}</h6>
+            <FormLabel style={{ marginTop: 10 }} component="legend">Date Of Birth</FormLabel>
             <TextField
               variant="outlined"
               id="dob"
               type="date"
               value={dob}
-              onChange={event => setDob(event.target.value)}
+              onChange={event => { dateValidator(event) }}
               required
               style={{ marginTop: 5 }}
               fullWidth />
