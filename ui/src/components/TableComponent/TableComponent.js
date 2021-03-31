@@ -8,41 +8,46 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { IconButton } from '@material-ui/core';
-
 import EditIcon from '@material-ui/icons/Edit';
-import Edit from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete'
 import { withRouter } from 'react-router';
 
 
 const TableComponent = (props) => {
-    const { editdet } = props
 
     const [Stud_List, setStud_List] = useState([])
-    
+
 
     useEffect(() => {
         getStudentlist()
 
-    },)
+    })
 
 
     const getStudentlist = () => {
         StudentService.getAll()
             .then(response => {
 
+
                 if (response.data.length > 0) {
-               
+
                     setStud_List(response.data.sort(compare))
+
                 }
             }).catch(e => { console.log(e); })
 
     }
 
-const redirectto=(stud)=>
-{
-    editdet(stud)
-    props.history.push(`/edit/${stud.id}`)
-}
+
+    const deleteStudent = (id) => {
+
+        StudentService.delete(id);
+        getStudentlist();
+    }
+
+    const redirectto = (stud) => {
+        props.history.push(`/edit/${stud.id}`)
+    }
 
     const compare = (a, b) => {
         //  Used for converting array in ascending order
@@ -86,6 +91,7 @@ const redirectto=(stud)=>
                                 <TableCell align="center">{stud.stud_class}</TableCell>
                                 <TableCell align="center">{stud.division}</TableCell>
                                 <TableCell><IconButton> <EditIcon onClick={() => redirectto(stud)} /></IconButton></TableCell>
+                                <TableCell><IconButton><DeleteIcon onClick={() => { deleteStudent(stud.id) }} /></IconButton></TableCell>
                             </TableRow>
                         ))
                     }

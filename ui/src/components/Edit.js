@@ -17,7 +17,7 @@ import { useParams, withRouter, } from "react-router";
 
 const Edit = (props) => {
 
-  const [trigger] = useState(true)
+  
   const { id } = useParams()
   const [name, setName] = useState(null);
   const [dob, setDob] = useState(null);
@@ -26,7 +26,13 @@ const Edit = (props) => {
   const [division, setDivision] = useState(null);
   const [rollno, setrollNo] = useState(null)
   const [btn_State, SetBtn_State] = useState(true);
-  // const pid="000";
+  const [dateAlert, setDateAlert] = useState("");
+useEffect(()=>{
+  if (dateAlert === " ") {
+    SetBtn_State(false)
+  } else SetBtn_State(true)
+
+},[dateAlert])
 
 
   useEffect(() => {
@@ -39,10 +45,12 @@ const Edit = (props) => {
         setGender(response.data.gender)
         setStud_Class(response.data.stud_class)
         setDivision(response.data.division)
-
-
+        
+    
       })
-  }, [trigger])
+    
+
+  }, [])
 
 
   const StudentData = (e) => {
@@ -62,6 +70,27 @@ const Edit = (props) => {
   }
 
 
+
+
+  const dateValidator = (a) => {
+    let todaysDate = new Date();
+    let year = todaysDate.getFullYear();
+
+    let month = ("0" + (todaysDate.getMonth() + 1)).slice(-2);
+
+    let day = ("0" + todaysDate.getDate()).slice(-2);
+    let minDate = (year + "-" + month + "-" + day); // Results in "YYYY-MM-DD" for today's date 
+    let d1 = Date.parse(minDate);
+    let d2 = Date.parse(a.target.value);
+
+    if (d1 < d2) {
+      setDateAlert("Enter a valid date")
+
+    } else
+      setDateAlert(" ");
+    setDob(a.target.value);
+
+  }
 
   const validator = (ev) => {
 
@@ -94,7 +123,7 @@ const Edit = (props) => {
 
   const getValue = (e) => {
     setGender(e.target.value);
-    SetBtn_State(false);
+    //SetBtn_State(false);
   }
 
 
@@ -135,13 +164,14 @@ const Edit = (props) => {
           </GridItem>
 
           <GridItem xs={12} sm={12} md={5}>
-            <FormLabel style={{ marginTop: 50 }} component="legend">Date Of Birth</FormLabel>
+            <h6 style={{ marginTop: 40, color: "red" }}>{dateAlert}</h6>
+            <FormLabel style={{ marginTop: 10 }} component="legend">Date Of Birth</FormLabel>
             <TextField
               variant="outlined"
               id="dob"
               type="date"
               value={dob}
-              onChange={event => setDob(event.target.value)}
+              onChange={event => { dateValidator(event) }}
               required
               style={{ marginTop: 5 }}
               fullWidth />

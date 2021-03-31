@@ -10,9 +10,11 @@ public interface StudentServices {
 
     List<Student> findAll();
 
-    String create(Student student);
+    Student create(Student student);
 
-    String update(String id, Student student);
+    Student update(String id, Student student);
 
     ResponseEntity<Student> getById(String id);
+
+    String delete(String id);
 }

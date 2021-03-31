@@ -1,16 +1,14 @@
 package com.back_end.back_end.Services;
-
 import java.util.List;
 import java.util.Optional;
-
 import com.back_end.back_end.Repository.StudentRepository;
+import com.back_end.back_end.model.Sequence;
 import com.back_end.back_end.model.Student;
-
+import com.back_end.back_end.Common.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @Service
@@ -18,6 +16,8 @@ public class StudentServiceImpl implements StudentServices {
 
   @Autowired
   private StudentRepository studentRepository;
+  @Autowired
+  private SequenceServices sequenceServices;
 
   @Override
   public
@@ -29,39 +29,55 @@ public class StudentServiceImpl implements StudentServices {
   }
 
   @Override
-  public String create(Student student) {
+  public Student create(Student student) {
 
-    studentRepository.save(new Student(student.getRollno(), student.getName(), student.getDob(),
-        student.getStud_class(), student.getDivision(), student.getGender()));
+    Sequence sequence = sequenceServices.getNextSequence(Constants.SEQUENCE_TYPE_ROLL_NO);
+    if (null != sequence) {
+      String rollNo = sequence.getRollNo();
+      Sequence newSequence = new Sequence(sequence.getId(), sequence.getType(), sequence.getPrefix(),
+          sequence.getNext_sequence() + 1);
+      sequenceServices.saveSequence(newSequence);
+      return studentRepository.save(new Student(rollNo, student.getName(), student.getDob(), student.getStud_class(),
+          student.getDivision(), student.getGender()));
+    } else {
+      Sequence newSequence = new Sequence();
+      newSequence.setType(Constants.SEQUENCE_TYPE_ROLL_NO);
+      newSequence.setPrefix(Constants.SEQUENCE_PREFIX_ROLL_NO);
+      newSequence.setNext_sequence(101);
+      sequenceServices.saveSequence(newSequence);
+      String rollNo = Constants.SEQUENCE_PREFIX_ROLL_NO + "-" + 100;
+      return studentRepository.save(new Student(rollNo, student.getName(), student.getDob(), student.getStud_class(),
+          student.getDivision(), student.getGender()));
 
-    return "successfull";
+    }
 
   }
 
   @Override
-  public String update( String id, Student student) {
-    
-      Optional<Student> studentData = studentRepository.findById(id);
+  public Student update(String id, Student student) {
 
-      if (studentData.isPresent()) {
-        Student _Student = studentData.get();
-        _Student.setRollno(student.getRollno());
+    Optional<Student> studentData = studentRepository.findById(id);
+    Student _Student = studentData.get();
+    _Student.setRollno(student.getRollno());
 
-        _Student.setName(student.getName());
-        _Student.setDob(student.getDob());
-        _Student.setStud_class(student.getStud_class());
-        _Student.setDivision(student.getDivision());
-        studentRepository.save(_Student);
+    _Student.setName(student.getName());
+    _Student.setDob(student.getDob());
+    _Student.setStud_class(student.getStud_class());
+    _Student.setDivision(student.getDivision());
+    return studentRepository.save(_Student);
 
-        return "successfull";
-      } 
-   else return "unsuccessfull";
-   
   }
 
   @Override
   public ResponseEntity<Student> getById(@PathVariable("id") String id) {
     Optional<Student> stud = studentRepository.findById(id);
     return new ResponseEntity<>(stud.get(), HttpStatus.OK);
+  }
+
+  @Override
+  public String delete(String id) {
+    studentRepository.deleteById(id);
+    return null;
+
   }
 }
